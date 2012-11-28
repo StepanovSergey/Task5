@@ -1,0 +1,12 @@
+Realize this task using existent products XML. Create servlet that will respond on 
+each request by content generated with the help of XSLT transformation. First page 
+is the list of Categories with quantity of products inside all subcategories 
+( CATEGORY_NAME (quantity of products)). Name of category is a link that will lead 
+to the list of subcategories ( SUBCATEGORY_NAME (quantity of products inside)). 
+Then subcategory link will get to the list of products with their information. This 
+page contains ADD button to add new product on the next page and after SAVE button 
+has been pressed you make again XSLT transformation to get XML with new product, 
+save it and generate in the response list of products.
+During addition of product(XSLT transformation) call the JAVA code using xalan 
+extension to validate fields. Do not forget to put BACK/CANCEL button for returning 
+on the previous page. 
