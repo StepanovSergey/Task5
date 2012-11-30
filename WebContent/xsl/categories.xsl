@@ -2,18 +2,16 @@
 <xsl:stylesheet version="1.0"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 	<xsl:template match="/">
-		<html>
-			<body>
-				<p>
-					Category1:
-					<xsl:value-of select="//category/@name" />
-					<xsl:value-of select="count(//category/subcategory/product)" />
-				</p>
-				<p>
-					Sub:
-					<xsl:value-of select="//subcategory/@name"></xsl:value-of>
-				</p>
-			</body>
-		</html>
+		<xsl:for-each select="//category">
+			<p>
+				<a href="#">
+					<xsl:value-of select="@name" />
+					(
+					<xsl:value-of select="count(subcategory/product)" />
+					items)
+				</a>
+			</p>
+		</xsl:for-each>
 	</xsl:template>
+
 </xsl:stylesheet>
