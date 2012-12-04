@@ -5,7 +5,7 @@
 		<display-name>Task5</display-name>
 		<display-name>Controller</display-name>
 		<servlet-name>Controller</servlet-name>
-		<servlet-class>com.epam.task5.controller.Controller</servlet-class>
+		<servlet-class>com.epam.task5.controller.XsltController</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>Controller</servlet-name>

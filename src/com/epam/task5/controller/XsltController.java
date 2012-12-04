@@ -21,7 +21,7 @@ import javax.xml.transform.stream.StreamSource;
  * @author Siarhei_Stsiapanau
  * 
  */
-public class Controller extends HttpServlet {
+public class XsltController extends HttpServlet {
     private static final long serialVersionUID = -8219522518629860330L;
 
     protected void doGet(HttpServletRequest request,
@@ -37,6 +37,7 @@ public class Controller extends HttpServlet {
     private void process(HttpServletRequest request,
 	    HttpServletResponse response) throws ServletException, IOException {
 	response.setContentType("text/html");
+	
 	String xmlFilePath = request.getSession().getServletContext().getRealPath("");
 	File xmlFile = new File(xmlFilePath + "/xml/products.xml");
 	File xsltFile = new File(xmlFilePath + "/xsl/subcategories.xsl");
@@ -56,8 +57,6 @@ public class Controller extends HttpServlet {
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
 	}
-	//String page = "xml/products.xml";
-	//response.sendRedirect(page);
     }
 
 }
