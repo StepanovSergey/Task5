@@ -4,6 +4,7 @@
 package com.epam.task5.command;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author Siarhei_Stsiapanau
@@ -12,8 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 public class ToMainPageCommand implements ICommand {
 
     @Override
-    public String execute(HttpServletRequest request) {
-	return Constants.ERROR_PAGE;
+    public void execute(HttpServletRequest request, HttpServletResponse response) {
     }
 
 }

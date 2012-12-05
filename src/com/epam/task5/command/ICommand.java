@@ -1,6 +1,7 @@
 package com.epam.task5.command;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * This interface provides command pattern
@@ -14,7 +15,8 @@ public interface ICommand {
      * 
      * @param request
      *            request from page
-     * @return name of page for forward
+     * @param response
+     *            servlet response
      */
-    public String execute(HttpServletRequest request);
+    public void execute(HttpServletRequest request, HttpServletResponse response);
 }

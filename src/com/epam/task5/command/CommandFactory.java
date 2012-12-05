@@ -18,6 +18,10 @@ public final class CommandFactory {
     private CommandFactory() {
 	commands = new HashMap<String, ICommand>();
 	commands.put(Constants.NO_COMMAND, null);
+	commands.put(Constants.SHOW_CATEGORIES_COMMAND,
+		new ShowCategoriesCommand());
+	commands.put(Constants.SHOW_SUBCATEGORIES_COMMAND,
+		new ShowSubcategoriesCommand());
     }
 
     /**
@@ -29,6 +33,7 @@ public final class CommandFactory {
 
     public static ICommand getCommand(HttpServletRequest request) {
 	String commandName = request.getParameter(Constants.COMMAND_PARAMETER);
+	System.out.println("Current Command: " + commandName);
 	ICommand command = commands.get(commandName);
 	if (command == null) {
 	    command = commands.get(Constants.NO_COMMAND);

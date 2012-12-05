@@ -8,6 +8,6 @@
 <title>Task5</title>
 </head>
 <body>
-<c:redirect url="/Controller" />
+<c:redirect url="/Controller?command=show_categories" />
 </body>
 </html>
