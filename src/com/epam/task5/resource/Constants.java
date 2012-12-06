@@ -1,4 +1,4 @@
-package com.epam.task5.command;
+package com.epam.task5.resource;
 
 /**
  * @author Siarhei_Stsiapanau

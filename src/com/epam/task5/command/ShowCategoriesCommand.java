@@ -5,14 +5,12 @@ package com.epam.task5.command;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.Writer;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.crypto.dsig.spec.XSLTTransformParameterSpec;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -34,12 +32,13 @@ public class ShowCategoriesCommand implements ICommand {
      * 
      * @see
      * com.epam.task5.command.ICommand#execute(javax.servlet.http.HttpServletRequest
-     * )
+     * 
      */
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) {
-	Writer writer = response.getWriter();
-	
+
+	readLock.lock();
+	readLock.unlock();
 	String xmlFilePath = request.getSession().getServletContext()
 		.getRealPath("");
 	File xmlFile = new File(xmlFilePath + "/xml/products.xml");

@@ -16,7 +16,7 @@ import com.epam.task5.command.ICommand;
  * @author Siarhei_Stsiapanau
  * 
  */
-public class XsltController extends HttpServlet {
+public final class XsltController extends HttpServlet {
     private static final long serialVersionUID = -8219522518629860330L;
 
     protected void doGet(HttpServletRequest request,
