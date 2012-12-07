@@ -1,5 +1,6 @@
 package com.epam.task5.command;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,6 +18,7 @@ public final class CommandFactory {
     private static final CommandFactory instance = new CommandFactory();
     private static Map<String, ICommand> commands;
     private static String realPath;
+    private static File xmlFile;
 
     private CommandFactory() {
 	commands = new HashMap<String, ICommand>();
@@ -25,6 +27,7 @@ public final class CommandFactory {
 		new ShowCategoriesCommand());
 	commands.put(Constants.SHOW_SUBCATEGORIES_COMMAND,
 		new ShowSubcategoriesCommand());
+	commands.put(Constants.SHOW_PRODUCTS_COMMAND, new ShowProductsCommand());
     }
 
     /**
@@ -37,6 +40,9 @@ public final class CommandFactory {
     public static ICommand getCommand(HttpServletRequest request) {
 	if (realPath == null) {
 	    realPath = request.getSession().getServletContext().getRealPath("");
+	}
+	if (xmlFile == null) {
+	    xmlFile = new File(realPath + Constants.XML_PATH);
 	}
 	String commandName = request.getParameter(Constants.COMMAND_PARAMETER);
 	System.out.println("Current Command: " + commandName);
@@ -51,7 +57,14 @@ public final class CommandFactory {
      * @return the realPath
      */
     public static String getRealPath() {
-        return realPath;
+	return realPath;
+    }
+
+    /**
+     * @return the xmlFile
+     */
+    public static File getXmlFile() {
+	return xmlFile;
     }
 
 }

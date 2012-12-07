@@ -20,42 +20,27 @@ import com.epam.task5.transform.XsltTransformerFactory;
 
 /**
  * @author Siarhei_Stsiapanau
- *
+ * 
  */
-public class ShowSubcategoriesCommand implements ICommand {
-    private static final Logger logger = Logger.getLogger(ShowSubcategoriesCommand.class);
+public class ShowProductsCommand implements ICommand {
+    private static final Logger logger = Logger
+	    .getLogger(ShowProductsCommand.class);
     private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
     private final Lock readLock = readWriteLock.readLock();
 
-
-    /* (non-Javadoc)
-     * @see com.epam.task5.command.ICommand#execute(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.epam.task5.command.ICommand#execute(javax.servlet.http.HttpServletRequest
+     * , javax.servlet.http.HttpServletResponse)
      */
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) {
-	/*String xmlFilePath = request.getSession().getServletContext().getRealPath("");
-	File xmlFile = new File(xmlFilePath + "/xml/products.xml");
-	File xsltFile = new File(xmlFilePath + "/xsl/subcategories.xsl");
-	try {
-	Source xmlSource = new StreamSource(xmlFile);
-	Source xsltSource = new StreamSource(xsltFile);
-	Result result = new StreamResult(response.getWriter());
-	
-	// create an instance of TransformerFactory
-	TransformerFactory transFact = javax.xml.transform.TransformerFactory
-		.newInstance();
-	Transformer transformer;
-	
-	    transformer = transFact.newTransformer(xsltSource);
-	    transformer.transform(xmlSource, result);
-	} catch (TransformerException | IOException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}*/
 	readLock.lock();
 	try {
 	    Transformer transformer = XsltTransformerFactory
-		    .getTransformer(Constants.SUBCATEGORIES_XSLT);
+		    .getTransformer(Constants.PRODUCTS_XSLT);
 	    transformer.transform(
 		    new StreamSource(CommandFactory.getXmlFile()),
 		    new StreamResult(response.getWriter()));

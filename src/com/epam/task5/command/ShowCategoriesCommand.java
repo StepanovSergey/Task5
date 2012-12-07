@@ -1,9 +1,5 @@
-/**
- * 
- */
 package com.epam.task5.command;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -11,19 +7,24 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+
+import com.epam.task5.resource.Constants;
+import com.epam.task5.transform.XsltTransformerFactory;
 
 /**
  * @author Siarhei_Stsiapanau
  * 
  */
 public class ShowCategoriesCommand implements ICommand {
+    private static final Logger logger = Logger
+	    .getLogger(ShowCategoriesCommand.class);
     private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
     private final Lock readLock = readWriteLock.readLock();
 
@@ -32,32 +33,22 @@ public class ShowCategoriesCommand implements ICommand {
      * 
      * @see
      * com.epam.task5.command.ICommand#execute(javax.servlet.http.HttpServletRequest
-     * 
      */
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) {
-
 	readLock.lock();
-	readLock.unlock();
-	String xmlFilePath = request.getSession().getServletContext()
-		.getRealPath("");
-	File xmlFile = new File(xmlFilePath + "/xml/products.xml");
-	File xsltFile = new File(xmlFilePath + "/xsl/categories.xsl");
 	try {
-	    Source xmlSource = new StreamSource(xmlFile);
-	    Source xsltSource = new StreamSource(xsltFile);
-	    Result result = new StreamResult(response.getWriter());
-
-	    // create an instance of TransformerFactory
-	    TransformerFactory transFact = javax.xml.transform.TransformerFactory
-		    .newInstance();
-	    Transformer transformer;
-
-	    transformer = transFact.newTransformer(xsltSource);
-	    transformer.transform(xmlSource, result);
+	    Transformer transformer = XsltTransformerFactory
+		    .getTransformer(Constants.CATEGORIES_XSLT);
+	    transformer.transform(
+		    new StreamSource(CommandFactory.getXmlFile()),
+		    new StreamResult(response.getWriter()));
 	} catch (TransformerException | IOException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
+	    if (logger.isEnabledFor(Level.ERROR)) {
+		logger.error(e.getMessage(), e);
+	    }
+	} finally {
+	    readLock.unlock();
 	}
     }
 
