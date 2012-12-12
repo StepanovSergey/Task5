@@ -1,5 +1,7 @@
 package com.epam.task5.command;
 
+import static com.epam.task5.resource.Constants.CATEGORIES_XSLT;
+
 import java.io.IOException;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -15,10 +17,11 @@ import javax.xml.transform.stream.StreamSource;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
-import com.epam.task5.resource.Constants;
 import com.epam.task5.transform.XsltTransformerFactory;
 
 /**
+ * This command show categories list
+ * 
  * @author Siarhei_Stsiapanau
  * 
  */
@@ -36,10 +39,10 @@ public class ShowCategoriesCommand implements ICommand {
      */
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) {
-	readLock.lock();
 	try {
 	    Transformer transformer = XsltTransformerFactory
-		    .getTransformer(Constants.CATEGORIES_XSLT);
+		    .getTransformer(CATEGORIES_XSLT);
+	    readLock.lock();
 	    transformer.transform(
 		    new StreamSource(CommandFactory.getXmlFile()),
 		    new StreamResult(response.getWriter()));

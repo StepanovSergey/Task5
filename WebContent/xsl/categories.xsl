@@ -19,7 +19,7 @@
 	<xsl:template name="categories">
 		<xsl:param name="category_name" select="@name" />
 		<p>
-			<a href="/Task5/Controller?command=show_subcategories&amp;current_category={$category_name}">
+			<a href="Controller?command=show_subcategories&amp;current_category={$category_name}">
 				<xsl:value-of select="$category_name" />
 				(
 				<xsl:value-of select="count(subcategory/product)" />

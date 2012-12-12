@@ -1,12 +1,18 @@
 package com.epam.task5.command;
 
+import static com.epam.task5.resource.Constants.ADD_PRODUCT_COMMAND;
+import static com.epam.task5.resource.Constants.COMMAND_PARAMETER;
+import static com.epam.task5.resource.Constants.NO_COMMAND;
+import static com.epam.task5.resource.Constants.SHOW_CATEGORIES_COMMAND;
+import static com.epam.task5.resource.Constants.SHOW_PRODUCTS_COMMAND;
+import static com.epam.task5.resource.Constants.SHOW_SUBCATEGORIES_COMMAND;
+import static com.epam.task5.resource.Constants.XML_PATH;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-
-import com.epam.task5.resource.Constants;
 
 /**
  * This class provides command factory
@@ -22,12 +28,10 @@ public final class CommandFactory {
 
     private CommandFactory() {
 	commands = new HashMap<String, ICommand>();
-	commands.put(Constants.NO_COMMAND, null);
-	commands.put(Constants.SHOW_CATEGORIES_COMMAND,
-		new ShowCategoriesCommand());
-	commands.put(Constants.SHOW_SUBCATEGORIES_COMMAND,
-		new ShowSubcategoriesCommand());
-	commands.put(Constants.SHOW_PRODUCTS_COMMAND, new ShowProductsCommand());
+	commands.put(SHOW_CATEGORIES_COMMAND, new ShowCategoriesCommand());
+	commands.put(SHOW_SUBCATEGORIES_COMMAND, new ShowSubcategoriesCommand());
+	commands.put(SHOW_PRODUCTS_COMMAND, new ShowProductsCommand());
+	commands.put(ADD_PRODUCT_COMMAND, new AddProductCommand());
     }
 
     /**
@@ -42,13 +46,13 @@ public final class CommandFactory {
 	    realPath = request.getSession().getServletContext().getRealPath("");
 	}
 	if (xmlFile == null) {
-	    xmlFile = new File(realPath + Constants.XML_PATH);
+	    xmlFile = new File(realPath + XML_PATH);
 	}
-	String commandName = request.getParameter(Constants.COMMAND_PARAMETER);
+	String commandName = request.getParameter(COMMAND_PARAMETER);
 	System.out.println("Current Command: " + commandName);
 	ICommand command = commands.get(commandName);
 	if (command == null) {
-	    command = commands.get(Constants.NO_COMMAND);
+	    command = commands.get(NO_COMMAND);
 	}
 	return command;
     }

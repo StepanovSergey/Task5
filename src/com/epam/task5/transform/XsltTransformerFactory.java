@@ -1,5 +1,10 @@
 package com.epam.task5.transform;
 
+import static com.epam.task5.resource.Constants.ADD_PRODUCT_XSLT;
+import static com.epam.task5.resource.Constants.CATEGORIES_XSLT;
+import static com.epam.task5.resource.Constants.PRODUCTS_XSLT;
+import static com.epam.task5.resource.Constants.SUBCATEGORIES_XSLT;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +19,6 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import com.epam.task5.command.CommandFactory;
-import com.epam.task5.resource.Constants;
 
 /**
  * This class provides XSLT transformer factory
@@ -31,12 +35,14 @@ public final class XsltTransformerFactory {
     private XsltTransformerFactory() {
 	String realPath = CommandFactory.getRealPath();
 	xsltFiles = new HashMap<>();
-	xsltFiles.put(Constants.CATEGORIES_XSLT, new File(realPath
-		+ Constants.CATEGORIES_XSLT_PATH));
-	xsltFiles.put(Constants.SUBCATEGORIES_XSLT, new File(realPath
-		+ Constants.SUBCATEGORIES_XSLT_PATH));
-	xsltFiles.put(Constants.PRODUCTS_XSLT, new File(realPath
-		+ Constants.PRODUCTS_XSLT_PATH));
+	xsltFiles.put(CATEGORIES_XSLT, new File(realPath
+		+ CATEGORIES_XSLT));
+	xsltFiles.put(SUBCATEGORIES_XSLT, new File(realPath
+		+ SUBCATEGORIES_XSLT));
+	xsltFiles.put(PRODUCTS_XSLT, new File(realPath
+		+ PRODUCTS_XSLT));
+	xsltFiles.put(ADD_PRODUCT_XSLT, new File(realPath
+		+ ADD_PRODUCT_XSLT));
     }
 
     public static Transformer getTransformer(String xsltFilePath) {
@@ -58,6 +64,6 @@ public final class XsltTransformerFactory {
      * @return the instance
      */
     public static XsltTransformerFactory getInstance() {
-        return instance;
+	return instance;
     }
 }

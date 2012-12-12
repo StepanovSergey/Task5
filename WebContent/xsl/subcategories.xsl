@@ -3,18 +3,15 @@
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 	<xsl:param name="current_category" />
 	<xsl:template match="/">
-		<xsl:param name="subcategory" select="@name" />
 		<html>
 			<head>
 				<title>Subcategories</title>
 			</head>
 			<body>
-				<p>Choose subcategory:</p>
 				<p>
-					Cat =
-					<xsl:value-of select="$current_category" />
+					Choose subcategory:
 				</p>
-				<xsl:for-each select="//category[@name='electronic']/subcategory">
+				<xsl:for-each select="//category[@name=$current_category]/subcategory">
 					<xsl:call-template name="subcategories" />
 				</xsl:for-each>
 				<form action="Controller" method="post">
@@ -27,12 +24,14 @@
 
 
 	<xsl:template name="subcategories">
-
+		<xsl:param name="subcategory_name" select="@name" />
 		<p>
-			<a href="#">
-				123
-				<!-- <xsl:value-of select="$subcategoryName" /> ( <xsl:value-of select="count(product)" 
-					/> items) -->
+			<a
+				href="Controller?command=show_products&amp;current_category={$current_category}&amp;current_subcategory={$subcategory_name}">
+				<xsl:value-of select="$subcategory_name" />
+				(
+				<xsl:value-of select="count(product)" />
+				items)
 			</a>
 		</p>
 	</xsl:template>
