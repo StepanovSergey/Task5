@@ -3,14 +3,8 @@ package com.epam.task5.validation;
 import static com.epam.task5.resource.Constants.DATE_PATTERN;
 import static com.epam.task5.resource.Constants.MODEL_PATTERN;
 import static com.epam.task5.resource.Constants.PRICE_PATTERN;
-import static com.epam.task5.resource.Constants.WRONG_COLOR;
-import static com.epam.task5.resource.Constants.WRONG_DATE;
-import static com.epam.task5.resource.Constants.WRONG_MODEL;
-import static com.epam.task5.resource.Constants.WRONG_PRICE;
-import static com.epam.task5.resource.Constants.WRONG_PRODUCER;
+import static com.epam.task5.resource.Constants.COLOR_PATTERN;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -30,13 +24,13 @@ import com.epam.task5.model.Product;
 public final class ProductValidator {
     private static final Logger logger = Logger
 	    .getLogger(ProductValidator.class);
-    private static List<String> errorList = new ArrayList<>();
     public static final Pattern modelPattern = Pattern
-	    .compile("^(([A-Za-zÀ-ßà-ÿ]){2}([0-9]){3})$");
+	    .compile("^(([A-Za-zÀ-ßà-ÿ¨¸]){2}([0-9]){3})$");
     public static final Pattern datePattern = Pattern
 	    .compile("^((0[1-9]|[1-2][0-9]|3[0-1])-(0[1-9]|1[0-2])-(19[7-9][0-9]|2[0-2][0-9][0-9]))$");
     public static final Pattern pricePattern = Pattern
 	    .compile("^(\\d+)|(\\d+\\.\\d{1,2})$");
+    public static final Pattern colorPattern = Pattern.compile("^[A-Za-zÀ-ßà-ÿ¨¸]+$");
 
     public ProductValidator() {
     }
@@ -67,39 +61,37 @@ public final class ProductValidator {
     }
 
     public boolean isProducerInvalid(String producer) {
-	return isNull(producer, WRONG_PRODUCER);
+	return isNull(producer);
     }
 
     public boolean isModelInvalid(String model) {
-	return isDataInvalid(model, MODEL_PATTERN, WRONG_MODEL);
+	return isDataInvalid(model, MODEL_PATTERN);
     }
 
     public boolean isColorInvalid(String color) {
-	return isNull(color, WRONG_COLOR);
+	return isDataInvalid(color, COLOR_PATTERN);
     }
 
     public boolean isDateInvalid(String date) {
-	return isDataInvalid(date, DATE_PATTERN, WRONG_DATE);
+	return isDataInvalid(date, DATE_PATTERN);
     }
 
     public boolean isPriceInvalid(String price) {
-	return isDataInvalid(price, PRICE_PATTERN, WRONG_PRICE);
+	return isDataInvalid(price, PRICE_PATTERN);
     }
 
-    private boolean isNull(String data, String errorMessage) {
+    private boolean isNull(String data) {
 	if (data.isEmpty() || data == null) {
-	    errorList.add(errorMessage);
 	    return true;
 	} else {
 	    return false;
 	}
     }
 
-    private boolean isDataInvalid(String data, String pattern,
-	    String errorMessage) {
+    private boolean isDataInvalid(String data, String pattern) {
 	boolean isDataInvalid = true;
 	try {
-	    if (isNull(data, errorMessage)) {
+	    if (isNull(data)) {
 		return true;
 	    } else {
 		Matcher matcher = null;
@@ -112,14 +104,17 @@ public final class ProductValidator {
 			if (pattern.equals(PRICE_PATTERN)) {
 			    matcher = pricePattern.matcher(data);
 			} else {
-			    throw new PatternSyntaxException(
-				    "Error in pattern!", pattern, -1);
+			    if (pattern.equals(COLOR_PATTERN)) {
+				matcher = colorPattern.matcher(data);
+			    } else {
+				throw new PatternSyntaxException(
+					"Error in pattern!", pattern, -1);
+			    }
 			}
 		    }
 		}
 		isDataInvalid = !(matcher.matches());
 		if (isDataInvalid) {
-		    errorList.add(errorMessage);
 		}
 		return isDataInvalid;
 	    }
@@ -130,12 +125,4 @@ public final class ProductValidator {
 	    return isDataInvalid;
 	}
     }
-
-    /**
-     * @return the errorList
-     */
-    public static List<String> getErrorList() {
-	return errorList;
-    }
-
 }

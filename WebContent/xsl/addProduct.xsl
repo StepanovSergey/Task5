@@ -7,29 +7,36 @@
 	<xsl:param name="current_subcategory" />
 	<xsl:param name="validator" />
 	<xsl:template match="/">
-		<html>
-			<head>
-				<title>Add product</title>
-			</head>
-			<body>
-				<p>Add product</p>
-				<xsl:value-of select="product:toString($product)"></xsl:value-of>
-				<table>
-					<xsl:call-template name="addProduct" />
-					<tr>
-						<td></td>
-						<td>
-							<form action="Controller">
-								<input type="hidden" name="command" value="show_products" />
-								<input type="hidden" name="current_category" value="{$current_category}" />
-								<input type="hidden" name="current_subcategory" value="{$current_subcategory}" />
-								<input type="submit" value="Back" />
-							</form>
-						</td>
-					</tr>
-				</table>
-			</body>
-		</html>
+		<xsl:choose>
+			<xsl:when test="validator:isProductValid($product)">
+				<xsl:apply-templates />
+			</xsl:when>
+			<xsl:otherwise>
+				<html>
+					<head>
+						<title>Add product</title>
+					</head>
+					<body>
+						<p>Add product</p>
+						<xsl:value-of select="product:toString($product)"></xsl:value-of>
+						<table>
+							<xsl:call-template name="addProduct" />
+							<tr>
+								<td></td>
+								<td>
+									<form action="Controller">
+										<input type="hidden" name="command" value="show_products" />
+										<input type="hidden" name="current_category" value="{$current_category}" />
+										<input type="hidden" name="current_subcategory" value="{$current_subcategory}" />
+										<input type="submit" value="Back" />
+									</form>
+								</td>
+							</tr>
+						</table>
+					</body>
+				</html>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 
 
@@ -97,7 +104,7 @@
 			<tr>
 				<th>Not in stock</th>
 				<td>
-				<xsl:variable name="notInStock" />
+					<xsl:variable name="notInStock" />
 					<xsl:choose>
 						<xsl:when test="product:isNotInStock($product)=true">
 							<xsl:variable name="notInStock" select="1" />
@@ -117,5 +124,42 @@
 				</td>
 			</tr>
 		</form>
+	</xsl:template>
+
+	<xsl:template match="node()|@*">
+		<xsl:copy>
+			<xsl:apply-templates select="node()|@*" />
+		</xsl:copy>
+	</xsl:template>
+
+	<xsl:template
+		match="products/category[@name=$current_category]/subcategory[@name=$current_subcategory]">
+		<xsl:copy>
+			<xsl:apply-templates select="node()|@*" />
+			<xsl:element name="product">
+				<xsl:element name="producer">
+					<xsl:value-of select="product:getProducer($product)" />
+				</xsl:element>
+				<xsl:element name="model">
+					<xsl:value-of select="product:getModel($product)" />
+				</xsl:element>
+				<xsl:element name="date_of_issue">
+					<xsl:value-of select="product:getDateOfIssue($product)" />
+				</xsl:element>
+				<xsl:element name="color">
+					<xsl:value-of select="product:getColor($product)" />
+				</xsl:element>
+				<xsl:choose>
+					<xsl:when test="product:getPrice($product) != 0">
+						<xsl:element name="price">
+							<xsl:value-of select="product:getPrice($product)" />
+						</xsl:element>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:element name="not_in_stock" />
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:element>
+		</xsl:copy>
 	</xsl:template>
 </xsl:stylesheet>

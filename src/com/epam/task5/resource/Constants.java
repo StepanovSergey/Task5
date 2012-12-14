@@ -44,6 +44,7 @@ public final class Constants {
     public static final String MODEL_PATTERN = "model_pattern";
     public static final String PRICE_PATTERN = "price_pattern";
     public static final String DATE_PATTERN = "date_pattern";
+    public static final String COLOR_PATTERN = "color_pattern";
     public static final String WRONG_MODEL = "Model must contain 2 letters and 3 digits";
     public static final String WRONG_PRODUCER = "Producer must be specified";
     public static final String WRONG_COLOR = "Color must be specified";
