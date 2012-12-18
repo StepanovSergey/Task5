@@ -24,17 +24,37 @@ import com.epam.task5.model.Product;
 public final class ProductValidator {
     private static final Logger logger = Logger
 	    .getLogger(ProductValidator.class);
+    /**
+     * Pattern for model data tag
+     */
     public static final Pattern modelPattern = Pattern
 	    .compile("^(([A-Za-zÀ-ßà-ÿ¨¸]){2}([0-9]){3})$");
+    /**
+     * Pattern for date data tag
+     */
     public static final Pattern datePattern = Pattern
 	    .compile("^((0[1-9]|[1-2][0-9]|3[0-1])-(0[1-9]|1[0-2])-(19[7-9][0-9]|2[0-2][0-9][0-9]))$");
+    /**
+     * Pattern for price data tag
+     */
     public static final Pattern pricePattern = Pattern
 	    .compile("^(\\d+)|(\\d+\\.\\d{1,2})$");
-    public static final Pattern colorPattern = Pattern.compile("^[A-Za-zÀ-ßà-ÿ¨¸]+$");
+    /**
+     * Pattern for color data tag
+     */
+    public static final Pattern colorPattern = Pattern
+	    .compile("^[A-Za-zÀ-ßà-ÿ¨¸]+$");
 
     public ProductValidator() {
     }
 
+    /**
+     * Tests product for validation
+     * 
+     * @param product
+     *            product to test
+     * @return is valid product
+     */
     public boolean isProductValid(Product product) {
 	if (product == null) {
 	    return false;
@@ -60,22 +80,57 @@ public final class ProductValidator {
 	return true;
     }
 
+    /**
+     * Test producer for validation
+     * 
+     * @param producer
+     *            producer to test
+     * @return is producer valid
+     */
     public boolean isProducerInvalid(String producer) {
 	return isNull(producer);
     }
 
+    /**
+     * Test model for validation
+     * 
+     * @param model
+     *            model to test
+     * @return is model valid
+     */
     public boolean isModelInvalid(String model) {
 	return isDataInvalid(model, MODEL_PATTERN);
     }
 
+    /**
+     * Test color for validation
+     * 
+     * @param color
+     *            color to test
+     * @return is color valid
+     */
     public boolean isColorInvalid(String color) {
 	return isDataInvalid(color, COLOR_PATTERN);
     }
 
+    /**
+     * Test date for validation
+     * 
+     * @param date
+     *            date to test
+     * @return is date valid
+     */
     public boolean isDateInvalid(String date) {
 	return isDataInvalid(date, DATE_PATTERN);
     }
 
+    /**
+     * Test price for validation
+     * 
+     * @param price
+     *            price to test
+     * @return is price valid
+     */
     public boolean isPriceInvalid(String price) {
 	return isDataInvalid(price, PRICE_PATTERN);
     }
