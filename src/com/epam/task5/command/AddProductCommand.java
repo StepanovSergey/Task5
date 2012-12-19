@@ -93,6 +93,11 @@ public class AddProductCommand implements ICommand {
 
 	    if (validator.isProductValid(product)) {
 		write(CommandFactory.getXmlFile(), result);
+		String link = "Controller?command=show_products&current_category="
+			+ currentCategory
+			+ "&current_subcategory="
+			+ currentSubcategory;
+		response.sendRedirect(link);
 	    } else {
 		writer.write(result.toString());
 	    }

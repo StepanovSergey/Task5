@@ -38,7 +38,7 @@ public final class ProductValidator {
      * Pattern for price data tag
      */
     public static final Pattern pricePattern = Pattern
-	    .compile("^(\\d+)|(\\d+\\.\\d{1,2})$");
+	    .compile("^([1-9])(\\d*)|(\\d*\\.\\d{1,2})$");
     /**
      * Pattern for color data tag
      */
@@ -72,8 +72,8 @@ public final class ProductValidator {
 	if (isDateInvalid(date)) {
 	    return false;
 	}
-	if (product.isNotInStock()) {
-	    if (isPriceInvalid(String.valueOf(product.getPrice()))) {
+	if (!product.isNotInStock()) {
+	    if (isPriceInvalid(product.getPrice())) {
 		return false;
 	    }
 	}

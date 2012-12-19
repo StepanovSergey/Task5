@@ -9,7 +9,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.xml.transform.Source;
+import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
@@ -30,28 +30,41 @@ public final class XsltTransformerFactory {
     private static final Logger logger = Logger
 	    .getLogger(XsltTransformerFactory.class);
     private static final XsltTransformerFactory instance = new XsltTransformerFactory();
-    private static Map<String, File> xsltFiles;
+    private static Map<String, Templates> xsltTemplates;
 
     private XsltTransformerFactory() {
 	String realPath = CommandFactory.getRealPath();
-	xsltFiles = new HashMap<>();
-	xsltFiles.put(CATEGORIES_XSLT, new File(realPath
-		+ CATEGORIES_XSLT));
-	xsltFiles.put(SUBCATEGORIES_XSLT, new File(realPath
-		+ SUBCATEGORIES_XSLT));
-	xsltFiles.put(PRODUCTS_XSLT, new File(realPath
-		+ PRODUCTS_XSLT));
-	xsltFiles.put(ADD_PRODUCT_XSLT, new File(realPath
-		+ ADD_PRODUCT_XSLT));
+	TransformerFactory factory = TransformerFactory.newInstance();
+	xsltTemplates = new HashMap<>();
+	try {
+	    xsltTemplates.put(
+		    CATEGORIES_XSLT,
+		    factory.newTemplates(new StreamSource(new File(realPath
+			    + CATEGORIES_XSLT))));
+	    xsltTemplates.put(
+		    SUBCATEGORIES_XSLT,
+		    factory.newTemplates(new StreamSource(new File(realPath
+			    + SUBCATEGORIES_XSLT))));
+	    xsltTemplates.put(
+		    PRODUCTS_XSLT,
+		    factory.newTemplates(new StreamSource(new File(realPath
+			    + PRODUCTS_XSLT))));
+	    xsltTemplates.put(
+		    ADD_PRODUCT_XSLT,
+		    factory.newTemplates(new StreamSource(new File(realPath
+			    + ADD_PRODUCT_XSLT))));
+	} catch (TransformerConfigurationException e) {
+	    if (logger.isEnabledFor(Level.ERROR)) {
+		logger.error(e.getMessage(), e);
+	    }
+	}
     }
 
     public static Transformer getTransformer(String xsltFilePath) {
-	TransformerFactory transFact = TransformerFactory.newInstance();
 	Transformer transformer = null;
 	try {
-	    File file = xsltFiles.get(xsltFilePath);
-	    Source source = new StreamSource(file);
-	    transformer = transFact.newTransformer(source);
+	    Templates template = xsltTemplates.get(xsltFilePath);
+	    transformer = template.newTransformer();
 	} catch (TransformerConfigurationException e) {
 	    if (logger.isEnabledFor(Level.ERROR)) {
 		logger.error(e.getMessage(), e);

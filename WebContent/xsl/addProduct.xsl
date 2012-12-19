@@ -14,17 +14,17 @@
 			<xsl:otherwise>
 				<html>
 					<head>
+						<link rel="stylesheet" type="text/css" href="css/style.css"></link>
 						<title>Add product</title>
 					</head>
 					<body>
 						<p>Add product</p>
-						<xsl:value-of select="product:toString($product)"></xsl:value-of>
 						<table>
 							<xsl:call-template name="addProduct" />
 							<tr>
 								<td></td>
 								<td>
-									<form action="Controller">
+									<form action="Controller" metod="POST">
 										<input type="hidden" name="command" value="show_products" />
 										<input type="hidden" name="current_category" value="{$current_category}" />
 										<input type="hidden" name="current_subcategory" value="{$current_subcategory}" />
@@ -41,7 +41,7 @@
 
 
 	<xsl:template name="addProduct">
-		<form action="Controller">
+		<form action="Controller" metod="POST">
 			<input type="hidden" name="command" value="add_product" />
 			<input type="hidden" name="current_category" value="{$current_category}" />
 			<input type="hidden" name="current_subcategory" value="{$current_subcategory}" />
@@ -53,7 +53,7 @@
 				<td>
 					<xsl:if
 						test="validator:isProducerInvalid(product:getProducer($product))">
-						Invalid!
+						<p class="error">Producer must be specified</p>
 					</xsl:if>
 				</td>
 			</tr>
@@ -64,7 +64,7 @@
 				</td>
 				<td>
 					<xsl:if test="validator:isModelInvalid(product:getModel($product))">
-						Invalid!
+						<p class="error">Model must contain 2 letters and 3 digits</p>
 					</xsl:if>
 				</td>
 			</tr>
@@ -75,7 +75,7 @@
 				</td>
 				<td>
 					<xsl:if test="validator:isDateInvalid(product:getDateOfIssue($product))">
-						Invalid!
+						<p class="error">Date must be dd-MM-yyyy</p>
 					</xsl:if>
 				</td>
 			</tr>
@@ -86,7 +86,7 @@
 				</td>
 				<td>
 					<xsl:if test="validator:isColorInvalid(product:getColor($product))">
-						Invalid!
+						<p class="error">Color must be specified</p>
 					</xsl:if>
 				</td>
 			</tr>
@@ -97,7 +97,7 @@
 				</td>
 				<td>
 					<xsl:if test="validator:isPriceInvalid(product:getPrice($product))">
-						Invalid!
+						<p class="error">Price must be e.g 14, 10.0 or 17.12</p>
 					</xsl:if>
 				</td>
 			</tr>
@@ -106,14 +106,14 @@
 				<td>
 					<xsl:variable name="notInStock" />
 					<xsl:choose>
-						<xsl:when test="product:isNotInStock($product)=true">
-							<xsl:variable name="notInStock" select="1" />
+						<xsl:when test="product:isNotInStock($product)">
+							<input type="checkbox" name="not_in_stock" checked="true" />
 						</xsl:when>
 						<xsl:otherwise>
-							<xsl:variable name="notInStock" select="0" />
+							<input type="checkbox" name="not_in_stock" />
 						</xsl:otherwise>
 					</xsl:choose>
-					<input type="checkbox" name="not_in_stock" value="{$notInStock}" />
+
 				</td>
 			</tr>
 			<tr>
