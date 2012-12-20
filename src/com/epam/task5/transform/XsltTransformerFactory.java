@@ -1,10 +1,5 @@
 package com.epam.task5.transform;
 
-import static com.epam.task5.resource.Constants.ADD_PRODUCT_XSLT;
-import static com.epam.task5.resource.Constants.CATEGORIES_XSLT;
-import static com.epam.task5.resource.Constants.PRODUCTS_XSLT;
-import static com.epam.task5.resource.Constants.SUBCATEGORIES_XSLT;
-
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,40 +25,29 @@ public final class XsltTransformerFactory {
     private static final Logger logger = Logger
 	    .getLogger(XsltTransformerFactory.class);
     private static final XsltTransformerFactory instance = new XsltTransformerFactory();
-    private static Map<String, Templates> xsltTemplates;
+    private static Map<String, Templates> xsltTemplates = new HashMap<>();
 
     private XsltTransformerFactory() {
-	String realPath = CommandFactory.getRealPath();
-	TransformerFactory factory = TransformerFactory.newInstance();
-	xsltTemplates = new HashMap<>();
-	try {
-	    xsltTemplates.put(
-		    CATEGORIES_XSLT,
-		    factory.newTemplates(new StreamSource(new File(realPath
-			    + CATEGORIES_XSLT))));
-	    xsltTemplates.put(
-		    SUBCATEGORIES_XSLT,
-		    factory.newTemplates(new StreamSource(new File(realPath
-			    + SUBCATEGORIES_XSLT))));
-	    xsltTemplates.put(
-		    PRODUCTS_XSLT,
-		    factory.newTemplates(new StreamSource(new File(realPath
-			    + PRODUCTS_XSLT))));
-	    xsltTemplates.put(
-		    ADD_PRODUCT_XSLT,
-		    factory.newTemplates(new StreamSource(new File(realPath
-			    + ADD_PRODUCT_XSLT))));
-	} catch (TransformerConfigurationException e) {
-	    if (logger.isEnabledFor(Level.ERROR)) {
-		logger.error(e.getMessage(), e);
-	    }
-	}
     }
 
+    /**
+     * Gets transformer from factory
+     * 
+     * @param xsltFilePath
+     *            path to xsl file
+     * @return cached transformer
+     */
     public static Transformer getTransformer(String xsltFilePath) {
 	Transformer transformer = null;
 	try {
 	    Templates template = xsltTemplates.get(xsltFilePath);
+	    if (template == null) {
+		String realPath = CommandFactory.getRealPath();
+		TransformerFactory factory = TransformerFactory.newInstance();
+		template = factory.newTemplates(new StreamSource(new File(
+			realPath + xsltFilePath)));
+		xsltTemplates.put(xsltFilePath, template);
+	    }
 	    transformer = template.newTransformer();
 	} catch (TransformerConfigurationException e) {
 	    if (logger.isEnabledFor(Level.ERROR)) {

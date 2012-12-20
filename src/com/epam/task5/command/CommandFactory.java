@@ -41,6 +41,13 @@ public final class CommandFactory {
 	return instance;
     }
 
+    /**
+     * Get command instance from factory
+     * 
+     * @param request
+     *            stores command name to return
+     * @return command instance
+     */
     public static ICommand getCommand(HttpServletRequest request) {
 	if (realPath == null) {
 	    realPath = request.getSession().getServletContext().getRealPath("");

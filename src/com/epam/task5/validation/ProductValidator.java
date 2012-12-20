@@ -28,7 +28,7 @@ public final class ProductValidator {
      * Pattern for model data tag
      */
     public static final Pattern modelPattern = Pattern
-	    .compile("^(([A-Za-zÀ-ßà-ÿ¨¸]){2}([0-9]){3})$");
+	    .compile("^(([A-Za-zï¿½-ï¿½ï¿½-ï¿½ï¿½ï¿½]){2}([0-9]){3})$");
     /**
      * Pattern for date data tag
      */
@@ -43,8 +43,11 @@ public final class ProductValidator {
      * Pattern for color data tag
      */
     public static final Pattern colorPattern = Pattern
-	    .compile("^[A-Za-zÀ-ßà-ÿ¨¸]+$");
+	    .compile("^[A-Za-zï¿½-ï¿½ï¿½-ï¿½ï¿½ï¿½]+$");
 
+    /**
+     * Default constructor
+     */
     public ProductValidator() {
     }
 
@@ -169,8 +172,6 @@ public final class ProductValidator {
 		    }
 		}
 		isDataInvalid = !(matcher.matches());
-		if (isDataInvalid) {
-		}
 		return isDataInvalid;
 	    }
 	} catch (PatternSyntaxException e) {
