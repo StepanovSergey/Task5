@@ -41,14 +41,13 @@ public class ShowSubcategoriesCommand implements ICommand {
      */
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) {
-	readLock.lock();
+	Transformer transformer = XsltTransformerFactory
+		.getTransformer(SUBCATEGORIES_XSLT);
+	String currentCategory = request
+		.getParameter(CURRENT_CATEGORY_PARAMETER);
+	transformer.setParameter(CURRENT_CATEGORY_PARAMETER, currentCategory);
 	try {
-	    Transformer transformer = XsltTransformerFactory
-		    .getTransformer(SUBCATEGORIES_XSLT);
-	    String currentCategory = request
-		    .getParameter(CURRENT_CATEGORY_PARAMETER);
-	    transformer.setParameter(CURRENT_CATEGORY_PARAMETER,
-		    currentCategory);
+	    readLock.lock();
 	    transformer.transform(
 		    new StreamSource(CommandFactory.getXmlFile()),
 		    new StreamResult(response.getWriter()));

@@ -42,17 +42,16 @@ public class ShowProductsCommand implements ICommand {
      */
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) {
+	Transformer transformer = XsltTransformerFactory
+		.getTransformer(PRODUCTS_XSLT);
+	String currentCategory = request
+		.getParameter(CURRENT_CATEGORY_PARAMETER);
+	transformer.setParameter(CURRENT_CATEGORY_PARAMETER, currentCategory);
+	String currentSubcategory = request
+		.getParameter(CURRENT_SUBCATEGORY_PARAMETER);
+	transformer.setParameter(CURRENT_SUBCATEGORY_PARAMETER,
+		currentSubcategory);
 	try {
-	    Transformer transformer = XsltTransformerFactory
-		    .getTransformer(PRODUCTS_XSLT);
-	    String currentCategory = request
-		    .getParameter(CURRENT_CATEGORY_PARAMETER);
-	    transformer.setParameter(CURRENT_CATEGORY_PARAMETER,
-		    currentCategory);
-	    String currentSubcategory = request
-		    .getParameter(CURRENT_SUBCATEGORY_PARAMETER);
-	    transformer.setParameter(CURRENT_SUBCATEGORY_PARAMETER,
-		    currentSubcategory);
 	    readLock.lock();
 	    transformer.transform(
 		    new StreamSource(CommandFactory.getXmlFile()),
