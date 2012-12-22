@@ -43,8 +43,8 @@ public final class XsltTransformerFactory {
     public static Transformer getTransformer(String xsltFilePath) {
 	Transformer transformer = null;
 	String realPath = CommandFactory.getRealPath();
+	Templates template = xsltTemplates.get(xsltFilePath);
 	try {
-	    Templates template = xsltTemplates.get(xsltFilePath);
 	    if (template == null) {
 		lock.lock();
 		template = xsltTemplates.get(xsltFilePath);
@@ -55,8 +55,8 @@ public final class XsltTransformerFactory {
 			    realPath + xsltFilePath)));
 		    xsltTemplates.put(xsltFilePath, template);
 		}
+		transformer = template.newTransformer();
 	    }
-	    transformer = template.newTransformer();
 	} catch (TransformerConfigurationException e) {
 	    if (logger.isEnabledFor(Level.ERROR)) {
 		logger.error(e.getMessage(), e);
