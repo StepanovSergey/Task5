@@ -32,6 +32,7 @@ public final class CommandFactory {
 	commands.put(SHOW_SUBCATEGORIES_COMMAND, new ShowSubcategoriesCommand());
 	commands.put(SHOW_PRODUCTS_COMMAND, new ShowProductsCommand());
 	commands.put(ADD_PRODUCT_COMMAND, new AddProductCommand());
+	commands.put(NO_COMMAND, new NoCommand());
     }
 
     /**

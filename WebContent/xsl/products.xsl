@@ -7,32 +7,48 @@
 		<html>
 			<head>
 				<title>Products</title>
+				<link rel="stylesheet" type="text/css" href="css/style.css" />
 			</head>
 			<body>
-				<p>Products</p>
-				<table border="1">
-					<tr>
-						<th>Producer</th>
-						<th>Model</th>
-						<th>Color</th>
-						<th>Date of issue</th>
-						<th>Price</th>
-					</tr>
-					<xsl:for-each
-						select="//category[@name=$current_category]/subcategory[@name=$current_subcategory]/product">
-						<xsl:call-template name="products" />
-					</xsl:for-each>
-				</table>
-				<form action="Controller" metod="POST">
-					<input type="hidden" name="command" value="add_product" />
-					<input type="hidden" name="current_category" value="{$current_category}" />
-					<input type="hidden" name="current_subcategory" value="{$current_subcategory}" />
-					<input type="submit" value="Add Product" />
-				</form>
+				<p>
+					Category:
+					<xsl:value-of select="$current_category" />
+				</p>
+				<p>
+					Subcategory:
+					<xsl:value-of select="$current_subcategory" />
+				</p>
+				<xsl:choose>
+					<xsl:when
+						test="count(//category[@name=$current_category]/subcategory[@name=$current_subcategory]/product) = 0">
+						<p class="error">No products in current category or subcategory</p>
+					</xsl:when>
+					<xsl:otherwise>
+					<p>Products</p>
+					<table border="1">
+						<tr>
+							<th>Producer</th>
+							<th>Model</th>
+							<th>Color</th>
+							<th>Date of issue</th>
+							<th>Price</th>
+						</tr>
+						<xsl:for-each
+							select="//category[@name=$current_category]/subcategory[@name=$current_subcategory]/product">
+							<xsl:call-template name="products" />
+						</xsl:for-each>
+					</table>
+					<form action="Controller" metod="POST">
+						<input type="hidden" name="command" value="add_product" />
+						<input type="hidden" name="current_category" value="{$current_category}" />
+						<input type="hidden" name="current_subcategory" value="{$current_subcategory}" />
+						<input type="submit" value="Add Product" />
+					</form>
+					</xsl:otherwise>
+				</xsl:choose>
 				<form action="Controller" metod="POST">
 					<input type="hidden" name="command" value="show_subcategories" />
 					<input type="hidden" name="current_category" value="{$current_category}" />
-					<input type="hidden" name="current_subcategory" value="{$current_subcategory}" />
 					<input type="submit" value="Back" />
 				</form>
 			</body>

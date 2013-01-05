@@ -6,14 +6,24 @@
 		<html>
 			<head>
 				<title>Subcategories</title>
+				<link rel="stylesheet" type="text/css" href="css/style.css" />
 			</head>
 			<body>
-				<p>
-					Choose subcategory:
+				<p>Category: 
+					<xsl:value-of select="$current_category" />
 				</p>
-				<xsl:for-each select="//category[@name=$current_category]/subcategory">
-					<xsl:call-template name="subcategories" />
-				</xsl:for-each>
+				<xsl:choose>
+					<xsl:when
+						test="count(//category[@name=$current_category]/subcategory) = 0">
+						<p class="error">No subcategories in current category</p>
+					</xsl:when>
+					<xsl:otherwise>
+					<p>Choose subcategory:</p>
+						<xsl:for-each select="//category[@name=$current_category]/subcategory">
+							<xsl:call-template name="subcategories" />
+						</xsl:for-each>
+					</xsl:otherwise>
+				</xsl:choose>
 				<form action="Controller" method="post">
 					<input type="hidden" name="command" value="show_categories" />
 					<input type="submit" value="Back" />

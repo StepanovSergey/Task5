@@ -15,6 +15,7 @@ public final class Constants {
     public static final String ERROR_PAGE = "jsp/error.jsp";
     public static final String CURRENT_CATEGORY_PARAMETER = "current_category";
     public static final String CURRENT_SUBCATEGORY_PARAMETER = "current_subcategory";
+    public static final String BACK_PAGE = "backpage";
     // Categories constants
     public static final String SHOW_CATEGORIES_COMMAND = "show_categories";
     public static final String CATEGORIES_XSLT = "/xsl/categories.xsl";
