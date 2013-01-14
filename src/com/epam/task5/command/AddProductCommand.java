@@ -19,18 +19,15 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 
 import com.epam.task5.model.Product;
 import com.epam.task5.transform.XsltTransformerFactory;
@@ -42,13 +39,10 @@ import com.epam.task5.validation.ProductValidator;
  * @author Siarhei_Stsiapanau
  * 
  */
-public class AddProductCommand implements ICommand {
-    private static final Logger logger = Logger
-	    .getLogger(AddProductCommand.class);
+public final class AddProductCommand implements ICommand {
     private static final String ENCODING = "UTF-8";
-    private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
-    private final Lock readLock = readWriteLock.readLock();
-    private final Lock writeLock = readWriteLock.writeLock();
+    private final Lock readLock = CommandFactory.getLock().readLock();
+    private final Lock writeLock = CommandFactory.getLock().writeLock();
 
     /*
      * (non-Javadoc)
@@ -58,56 +52,73 @@ public class AddProductCommand implements ICommand {
      * , javax.servlet.http.HttpServletResponse)
      */
     @Override
-    public void execute(HttpServletRequest request, HttpServletResponse response) {
+    public void execute(HttpServletRequest request, HttpServletResponse response)
+	    throws Exception {
+
+	// Defining variables
+	Transformer transformer = XsltTransformerFactory
+		.getTransformer(ADD_PRODUCT_XSLT);
+	String currentCategory = request
+		.getParameter(CURRENT_CATEGORY_PARAMETER);
+	String currentSubcategory = request
+		.getParameter(CURRENT_SUBCATEGORY_PARAMETER);
+	ProductValidator validator = new ProductValidator();
+	Product product = setProductParameters(request);
+	Writer result = new StringWriter();
+	long lastModified = CommandFactory.getXmlFile().lastModified();
+
+	// Setting transformer parameters
+	transformer.setParameter(CURRENT_CATEGORY_PARAMETER, currentCategory);
+	transformer.setParameter(CURRENT_SUBCATEGORY_PARAMETER,
+		currentSubcategory);
+	transformer.setParameter(VALIDATOR_PARAMETER, validator);
+	transformer.setParameter(PRODUCT_PARAMETER, product);
+	// Transforming file
+	readLock.lock();
 	try {
-	    Transformer transformer = XsltTransformerFactory
-		    .getTransformer(ADD_PRODUCT_XSLT);
-	    String currentCategory = request
-		    .getParameter(CURRENT_CATEGORY_PARAMETER);
-	    transformer.setParameter(CURRENT_CATEGORY_PARAMETER,
-		    currentCategory);
-	    String currentSubcategory = request
-		    .getParameter(CURRENT_SUBCATEGORY_PARAMETER);
-	    transformer.setParameter(CURRENT_SUBCATEGORY_PARAMETER,
-		    currentSubcategory);
-	    ProductValidator validator = new ProductValidator();
-	    transformer.setParameter(VALIDATOR_PARAMETER, validator);
-	    Product product = setProductParameters(request);
-	    transformer.setParameter(PRODUCT_PARAMETER, product);
-	    Writer result = new StringWriter();
-	    try {
-		readLock.lock();
-		transformer.transform(
-			new StreamSource(CommandFactory.getXmlFile()),
-			new StreamResult(result));
-
-	    } catch (TransformerException e) {
-		if (logger.isEnabledFor(Level.ERROR)) {
-		    logger.error(e.getMessage(), e);
-		}
-	    } finally {
-		readLock.unlock();
-	    }
-
+	    Source source = new StreamSource(CommandFactory.getXmlFile());
+	    Result res = new StreamResult(result);
+	    transformer.transform(source, res);
+	} catch (TransformerException e) {
+	    throw e;
+	} finally {
+	    readLock.unlock();
+	}
+	try {
 	    Writer writer = response.getWriter();
-
-	    if (validator.isProductValid(product)) {
-		write(CommandFactory.getXmlFile(), result);
-		String link = "Controller?command=show_products&current_category="
-			+ currentCategory
-			+ "&current_subcategory="
-			+ currentSubcategory;
-		response.sendRedirect(link);
+	    if (validator.isProductValid()) {
+		if (lastModified == CommandFactory.getXmlFile().lastModified()) {
+		    // Write to file
+		    write(CommandFactory.getXmlFile(), result);
+		    String link = "Controller?command=show_products&current_category="
+			    + currentCategory
+			    + "&current_subcategory="
+			    + currentSubcategory;
+		    // Show products page
+		    response.sendRedirect(link);
+		} else {
+		    // Retry to transform
+		    Source source = new StreamSource(
+			    CommandFactory.getXmlFile());
+		    Result res = new StreamResult(result);
+		    transformer.transform(source, res);
+		}
 	    } else {
+		// Display add form with error messages
 		writer.write(result.toString());
 	    }
-	} catch (IOException e) {
-	    if (logger.isEnabledFor(Level.ERROR)) {
-		logger.error(e.getMessage(), e);
-	    }
+	} catch (IOException | TransformerException e) {
+	    throw e;
 	}
     }
 
+    /**
+     * Get product data from request and return product instance
+     * 
+     * @param request
+     *            get parameters from this request
+     * @return product instance
+     */
     private Product setProductParameters(HttpServletRequest request) {
 	Product product = new Product();
 	String producer = request.getParameter(PRODUCER_TAG);
@@ -149,16 +160,24 @@ public class AddProductCommand implements ICommand {
 	return product;
     }
 
-    private void write(File xmlFile, Writer writer) {
+    /**
+     * Write data from writer to file
+     * 
+     * @param xmlFile
+     *            file to write
+     * @param writer
+     *            data to write
+     * @throws IOException
+     *             if there is problem to write file
+     */
+    private void write(File xmlFile, Writer writer) throws IOException {
 	try {
 	    Writer fileWriter = new PrintWriter(xmlFile, ENCODING);
 	    writeLock.lock();
 	    fileWriter.write(writer.toString());
 	    fileWriter.flush();
 	} catch (IOException e) {
-	    if (logger.isEnabledFor(Level.ERROR)) {
-		logger.error(e.getMessage(), e);
-	    }
+	    throw e;
 	} finally {
 	    writeLock.unlock();
 	}

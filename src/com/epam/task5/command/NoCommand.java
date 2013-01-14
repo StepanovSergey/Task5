@@ -10,15 +10,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
-import com.epam.task5.resource.Constants;
-
 /**
  * This command shows products list
  * 
  * @author Siarhei_Stsiapanau
  * 
  */
-public class NoCommand implements ICommand {
+public final class NoCommand implements ICommand {
     private static final Logger logger = Logger.getLogger(NoCommand.class);
 
     /*
@@ -30,8 +28,6 @@ public class NoCommand implements ICommand {
      */
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) {
-	System.out.println("Backpage: "
-		+ request.getSession().getAttribute(Constants.BACK_PAGE));
 	try {
 	    response.sendRedirect(ERROR_PAGE);
 	} catch (IOException e) {

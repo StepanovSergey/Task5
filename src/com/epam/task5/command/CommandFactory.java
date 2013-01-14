@@ -11,6 +11,8 @@ import static com.epam.task5.resource.Constants.XML_PATH;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -21,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  */
 public final class CommandFactory {
+    private static final ReadWriteLock lock = new ReentrantReadWriteLock();
     private static final CommandFactory instance = new CommandFactory();
     private static Map<String, ICommand> commands;
     private static String realPath;
@@ -77,6 +80,13 @@ public final class CommandFactory {
      */
     public static File getXmlFile() {
 	return xmlFile;
+    }
+
+    /**
+     * @return the lock
+     */
+    public static ReadWriteLock getLock() {
+	return lock;
     }
 
 }

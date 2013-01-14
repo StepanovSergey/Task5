@@ -2,6 +2,7 @@ package com.epam.task5.command;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.transform.TransformerConfigurationException;
 
 /**
  * This interface provides command pattern
@@ -17,6 +18,10 @@ public interface ICommand {
      *            request from page
      * @param response
      *            servlet response
+     * @throws TransformerConfigurationException
+     * @throws Exception
+     *             if something wrong
      */
-    public void execute(HttpServletRequest request, HttpServletResponse response);
+    public void execute(HttpServletRequest request, HttpServletResponse response)
+	    throws Exception;
 }

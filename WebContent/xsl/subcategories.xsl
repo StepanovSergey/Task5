@@ -9,7 +9,8 @@
 				<link rel="stylesheet" type="text/css" href="css/style.css" />
 			</head>
 			<body>
-				<p>Category: 
+				<p>
+					Category:
 					<xsl:value-of select="$current_category" />
 				</p>
 				<xsl:choose>
@@ -18,16 +19,14 @@
 						<p class="error">No subcategories in current category</p>
 					</xsl:when>
 					<xsl:otherwise>
-					<p>Choose subcategory:</p>
+						<p>Choose subcategory:</p>
 						<xsl:for-each select="//category[@name=$current_category]/subcategory">
 							<xsl:call-template name="subcategories" />
 						</xsl:for-each>
 					</xsl:otherwise>
 				</xsl:choose>
-				<form action="Controller" method="post">
-					<input type="hidden" name="command" value="show_categories" />
-					<input type="submit" value="Back" />
-				</form>
+				<input type="button" value="Back"
+					onclick="window.location = 'Controller?command=show_categories'" />
 			</body>
 		</html>
 	</xsl:template>
